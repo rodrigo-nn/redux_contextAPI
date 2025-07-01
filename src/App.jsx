@@ -1,43 +1,50 @@
-import { useContext, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCars } from "./features/fetchCars";
+import { useEffect } from "react";
+
 import Brand from "./component/Brand";
-import { CarContext } from "./contexts/Contexts";
 import Color from "./component/Color";
+import { useCars } from "./hooks/useCars";
 
 function App() {
-  const { dataC } = useContext(CarContext);
-  const dispatch = useDispatch();
-  const { data, loading, error } = useSelector((state) => state.cars);
+  const { cars, loading, fetchCars } = useCars();
 
   useEffect(() => {
-    dispatch(fetchCars());
-  }, [dispatch]);
+    fetchCars();
+  }, []);
 
-  if (loading) return <p>Carregando...</p>;
-  if (error) return <p>Erro: {error}</p>;
   return (
-    <div style={{ width: "500px", margin: "10px", display: "flex" }}>
-      <div style={{ margin: "10px" }}>
-        <h2>Redux Pai</h2>
-        {data?.map((car, index) => (
-          <div key={index}>{car.name}</div>
-        ))}
-      </div>
-      <div style={{ margin: "10px" }}>
-        <h2>Redux Filho</h2>
-        <Brand />
-      </div>
-      <div style={{ margin: "10px" }}>
-        <h2>ContextAPI</h2>
-        {dataC?.map((car, index) => (
-          <div key={index}>{car.year}</div>
-        ))}
-      </div>
-      <div style={{ margin: "10px" }}>
-        <h2>ContextAPI Filho</h2>
-        <Color />
-      </div>
+    <div style={{ padding: "20px" }}>
+      {!loading ? (
+      <table style={{ borderCollapse: "collapse", width: "100%", maxWidth: "800px" }}>
+        <thead>
+          <tr style={{ backgroundColor: "#f5f5f5" }}>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>Redux Pai</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>Redux Filho</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>ContextAPI</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "left" }}>ContextAPI Filho</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cars?.map((car, index) => (
+            <tr key={car.id || index}>
+              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                {car.name}
+              </td>
+              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                <Brand brand={car.company} />
+              </td>
+              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                {car.year}
+              </td>
+              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                <Color color={car.color} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      ) : (
+        <p>Carregando...</p>
+      )}
     </div>
   );
 }
