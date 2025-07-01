@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import { CarContext } from "../contexts/Contexts";
 
-const Color = () => {
+const Color = ({ color }) => {
   const { dataC } = useContext(CarContext);
   return (
     <>
-      {dataC?.map((car, index) => (
-        <div key={index}>{car.color}</div>
-      ))}
+     
+        <div>{color}</div>
+     
     </>
   );
 };
